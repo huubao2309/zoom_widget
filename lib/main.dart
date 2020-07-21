@@ -27,36 +27,60 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  double _zoom = 10.0;
+
   @override
   Widget build(BuildContext context) {
     print('Width: ${MediaQuery.of(context).size.width}');
     print('Height: ${MediaQuery.of(context).size.height}');
-    return SingleChildScrollView(
-      child: Center(
-        child: Column(
-          children: <Widget>[
-            Container(
-              color: Colors.red,
-              padding: EdgeInsets.all(20.0),
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height - 100,
-              child: Zoom(
+    print("InitZoom: $_zoom");
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.red,
+        onPressed: () {
+          setState(() {
+            print('Reset zoom');
+            _zoom = 0.5;
+          });
+        },
+      ),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: <Widget>[
+              Container(
+                color: Colors.red,
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: Zoom(
+                  initZoom: 0.5,
+                  centerOnScale: true,
+                  width: MediaQuery.of(context).size.width * _zoom,
+                  height: MediaQuery.of(context).size.height * _zoom,
                 onPositionUpdate: (Offset position) {
-                  print(position);
+                  //print(position);
                 },
-                onScaleUpdate: (double scale, double zoom) {
-                  print("$scale  $zoom");
-                },
-                child: Center(
-                  child: Text("Happy zoom!!"),
+                  onScaleUpdate: (scale, zoom) {
+                    print("scale: $scale");
+                    _zoom = zoom;
+                    print("Zoom: $zoom");
+                  },
+                  child: Center(
+                    child: Container(
+                      color: Colors.red,
+                      width: 200 * _zoom ,
+                      height: 200 * _zoom ,
+                      child: Text("Happy zoom!!"),
+                    ),
+                  ),
                 ),
               ),
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: 100,
-            ),
-          ],
+//            Container(
+//              width: MediaQuery.of(context).size.width,
+//              height: 100,
+//            ),
+            ],
+          ),
         ),
       ),
     );
